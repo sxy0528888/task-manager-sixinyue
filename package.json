@@ -26,7 +26,7 @@
     "lint": "node ./scripts/lint.js",
     "precommit": "node scripts/hooks/run-precommit.js",
     "prepare": "chmod +x .githooks/pre-commit 2>/dev/null; git config core.hooksPath .githooks 2>/dev/null || true",
-    "postinstall": "fullstack-cli action-plugin init"
+    "postinstall": "echo 'skip platform init (removed for Vercel deployment)'"
   },
   "dependencies": {
     "@lark-apaas/fullstack-nestjs-core": "^1.1.65",
@@ -37,6 +37,7 @@
     "@nestjs/core": "^10.4.20",
     "@nestjs/platform-express": "^10.4.20",
     "@nestjs/swagger": "^7.4.2",
+    "@supabase/supabase-js": "^2.118.0",
     "@tanstack/react-form": "^1.27.6",
     "@tanstack/react-query": "^5.90.12",
     "axios": "^1.12.2",

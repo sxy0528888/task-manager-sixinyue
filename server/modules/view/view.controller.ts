@@ -1,17 +1,17 @@
-import { Controller, Get, Render, Req } from '@nestjs/common';
-import type { Request } from 'express';
+import { Controller, Get, Render } from '@nestjs/common';
 
 @Controller()
 export class ViewController {
 
   @Get(['/', '*'])
   @Render('index')
-  async render(@Req() req: Request): Promise<{ __platform__: string }>  {
-    // you can add custom render params here
-    const platformData = req.__platform_data__ ?? {};
+  render(): Record<string, string> {
+    // 纯静态渲染入口页（已脱离妙搭平台，模板变量提供默认值）
     return {
-      // don't delete this line, it's used by client to get platform info
-      __platform__: JSON.stringify(platformData),
+      __platform__: '{}',
+      appName: '智能任务管理',
+      appDescription: '智能任务管理系统',
+      appAvatar: '',
     };
   }
 }

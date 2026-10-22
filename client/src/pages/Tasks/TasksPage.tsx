@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Plus, Check, Trash2, ListTodo } from 'lucide-react';
-import { logger } from '@lark-apaas/client-toolkit/logger';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -39,7 +38,7 @@ const TasksPage: React.FC = () => {
       const data = await tasksApi.getTasks(filterPriority);
       setTasks(data);
     } catch (error) {
-      logger.error('加载任务失败', error);
+      console.error('加载任务失败', error);
     } finally {
       setLoading(false);
     }
@@ -58,7 +57,7 @@ const TasksPage: React.FC = () => {
       setTitle('');
       setPriority('medium');
     } catch (error) {
-      logger.error('添加任务失败', error);
+      console.error('添加任务失败', error);
     }
   };
 
@@ -67,7 +66,7 @@ const TasksPage: React.FC = () => {
       const updated = await tasksApi.updateTask(task.id, { completed: !task.completed });
       setTasks((prev) => prev.map((t) => (t.id === task.id ? updated : t)));
     } catch (error) {
-      logger.error('更新任务失败', error);
+      console.error('更新任务失败', error);
     }
   };
 
@@ -76,7 +75,7 @@ const TasksPage: React.FC = () => {
       await tasksApi.deleteTask(id);
       setTasks((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
-      logger.error('删除任务失败', error);
+      console.error('删除任务失败', error);
     }
   };
 

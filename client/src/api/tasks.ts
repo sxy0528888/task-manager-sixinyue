@@ -1,5 +1,4 @@
-import { logger } from '@lark-apaas/client-toolkit/logger';
-import { axiosForBackend } from '@lark-apaas/client-toolkit/utils/getAxiosForBackend';
+import { request } from './index';
 import type {
   Task,
   TaskListResponse,
@@ -9,44 +8,23 @@ import type {
 } from '@shared/api.interface';
 
 export async function getTasks(priority?: TaskPriority | 'all'): Promise<Task[]> {
-  try {
-    const params: Record<string, string> = {};
-    if (priority && priority !== 'all') {
-      params.priority = priority;
-    }
-    const response = await axiosForBackend.get<TaskListResponse>('/api/tasks', { params });
-    return response.data.items;
-  } catch (error) {
-    logger.error('获取任务列表失败', error);
-    throw error;
+  const params = new URLSearchParams();
+  if (priority && priority !== 'all') {
+    params.set('priority', priority);
   }
+  const qs = params.toString();
+  const data = await request<TaskListResponse>(`/api/tasks${qs ? `?${qs}` : ''}`);
+  return data.items;
 }
 
 export async function createTask(data: CreateTaskRequest): Promise<Task> {
-  try {
-    const response = await axiosForBackend.post<Task>('/api/tasks', data);
-    return response.data;
-  } catch (error) {
-    logger.error('创建任务失败', error);
-    throw error;
-  }
+  return request<Task>('/api/tasks', { method: 'POST', body: JSON.stringify(data) });
 }
 
 export async function updateTask(id: string, data: UpdateTaskRequest): Promise<Task> {
-  try {
-    const response = await axiosForBackend.patch<Task>(`/api/tasks/${id}`, data);
-    return response.data;
-  } catch (error) {
-    logger.error('更新任务失败', error);
-    throw error;
-  }
+  return request<Task>(`/api/tasks/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 }
 
 export async function deleteTask(id: string): Promise<void> {
-  try {
-    await axiosForBackend.delete(`/api/tasks/${id}`);
-  } catch (error) {
-    logger.error('删除任务失败', error);
-    throw error;
-  }
+  await request<void>(`/api/tasks/${id}`, { method: 'DELETE' });
 }

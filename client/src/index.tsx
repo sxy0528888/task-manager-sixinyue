@@ -1,14 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { createPortal } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { AppContainer } from '@lark-apaas/client-toolkit/components/AppContainer';
-import { ErrorRender } from '@lark-apaas/client-toolkit/components/ErrorRender';
-
 import RoutesComponent from './app.tsx';
 import './index.css';
-import { createPortal } from 'react-dom';
 import { Toaster } from '@client/src/components/ui/sonner';
 
 const CLIENT_BASE_PATH = process.env.CLIENT_BASE_PATH || '/';
@@ -16,19 +13,29 @@ const CLIENT_BASE_PATH = process.env.CLIENT_BASE_PATH || '/';
 const MainApp = () => {
   return (
     <BrowserRouter basename={CLIENT_BASE_PATH}>
-      <AppContainer defaultTheme="light">
-        <ErrorBoundary
-          fallbackRender={({ error, resetErrorBoundary }) => (
-            <ErrorRender
-              error={error as Error}
-              resetErrorBoundary={resetErrorBoundary}
-            />
-          )}
-        >
-          <RoutesComponent />
-          {createPortal(<Toaster />, document.body)}
-        </ErrorBoundary>
-      </AppContainer>
+      <ErrorBoundary
+        fallbackRender={({ error, resetErrorBoundary }) => (
+          <div style={{ padding: '40px 20px', textAlign: 'center', fontFamily: 'sans-serif' }}>
+            <h1 style={{ fontSize: 20, marginBottom: 8 }}>页面出错了</h1>
+            <p style={{ color: '#666', marginBottom: 16 }}>{(error as Error)?.message || '发生未知错误'}</p>
+            <button
+              onClick={resetErrorBoundary}
+              style={{
+                padding: '8px 24px',
+                borderRadius: 8,
+                border: '1px solid #ccc',
+                background: '#fff',
+                cursor: 'pointer',
+              }}
+            >
+              重试
+            </button>
+          </div>
+        )}
+      >
+        <RoutesComponent />
+        {createPortal(<Toaster />, document.body)}
+      </ErrorBoundary>
     </BrowserRouter>
   );
 };
